@@ -15,6 +15,14 @@ export function createApp() {
 
   app.set("view engine", "ejs");
   app.set("views", path.join(ROOT_DIR, "src", "views"));
+  app.locals.appName = "4TB";
+
+  app.use((req, res, next) => {
+    res.locals.appName = "4TB";
+    res.locals.currentPath = req.path ?? "";
+    res.locals.isProd = env.isProd;
+    next();
+  });
 
   app.use((req, res, next) => {
     void ensureReady().then(() => next()).catch(next);
@@ -26,13 +34,6 @@ export function createApp() {
   app.use(express.static(path.join(ROOT_DIR, "src", "public")));
   app.use(flashMiddleware);
   app.use(loadCurrentUser);
-
-  app.use((req, res, next) => {
-    res.locals.appName = "4TB";
-    res.locals.currentPath = req.path;
-    res.locals.isProd = env.isProd;
-    next();
-  });
 
   app.use(router);
   app.use(ensureAuthenticated);

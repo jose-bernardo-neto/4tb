@@ -7,6 +7,8 @@ export function notFound(_req: Request, res: Response): void {
     title: "Não encontrado",
     status: 404,
     message: "A página pedida não existe.",
+    appName: res.locals.appName ?? "4TB",
+    currentPath: res.locals.currentPath ?? "",
   });
 }
 
@@ -20,6 +22,8 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
       title: "Erro",
       status: 400,
       message,
+      appName: res.locals.appName ?? "4TB",
+      currentPath: res.locals.currentPath ?? "",
     });
     return;
   }
@@ -36,5 +40,7 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
     title: status >= 500 ? "Erro interno" : "Erro",
     status,
     message,
+    appName: res.locals.appName ?? "4TB",
+    currentPath: res.locals.currentPath ?? "",
   });
 }

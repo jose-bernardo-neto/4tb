@@ -3,22 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= title %> · <%= appName %></title>
+    <title><%= typeof title !== 'undefined' ? title : '4TB' %> · <%= typeof appName !== 'undefined' ? appName : '4TB' %></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body class="<%= typeof guest !== 'undefined' && guest ? 'is-guest' : '' %>">
     <header class="topbar">
       <div class="topbar__brand">
-        <a href="<%= typeof currentUser !== 'undefined' && currentUser ? '/' : (typeof publicArea !== 'undefined' && publicArea ? '/turma' : '/login') %>"><i class="fa-solid fa-layer-group"></i> <%= appName %></a>
+        <a href="<%= typeof currentUser !== 'undefined' && currentUser ? '/' : (typeof publicArea !== 'undefined' && publicArea ? '/turma' : '/login') %>"><i class="fa-solid fa-layer-group"></i> <%= typeof appName !== 'undefined' ? appName : '4TB' %></a>
         <span><%= typeof publicArea !== 'undefined' && publicArea ? 'Área do estudante' : 'Painel do Delegado' %></span>
       </div>
       <% if (typeof currentUser !== 'undefined' && currentUser) { %>
         <nav class="topbar__nav">
-          <a href="/" class="<%= currentPath === '/' ? 'is-active' : '' %>"><i class="fa-solid fa-house"></i> Início</a>
-          <a href="/anos-letivos" class="<%= currentPath.startsWith('/anos-letivos') || currentPath.startsWith('/semestres') || currentPath.startsWith('/cadeiras') || currentPath.startsWith('/tarefas') || currentPath.startsWith('/anexos') ? 'is-active' : '' %>"><i class="fa-solid fa-calendar"></i> Anos letivos</a>
-          <a href="/professores" class="<%= currentPath.startsWith('/professores') ? 'is-active' : '' %>"><i class="fa-solid fa-chalkboard-user"></i> Professores</a>
-          <a href="/alunos" class="<%= currentPath.startsWith('/alunos') ? 'is-active' : '' %>"><i class="fa-solid fa-users"></i> Alunos</a>
+          <a href="/" class="<%= (typeof currentPath !== 'undefined' ? currentPath : '') === '/' ? 'is-active' : '' %>"><i class="fa-solid fa-house"></i> Início</a>
+          <a href="/anos-letivos" class="<%= (typeof currentPath !== 'undefined' ? currentPath : '').startsWith('/anos-letivos') || (typeof currentPath !== 'undefined' ? currentPath : '').startsWith('/semestres') || (typeof currentPath !== 'undefined' ? currentPath : '').startsWith('/cadeiras') || (typeof currentPath !== 'undefined' ? currentPath : '').startsWith('/tarefas') || (typeof currentPath !== 'undefined' ? currentPath : '').startsWith('/anexos') ? 'is-active' : '' %>"><i class="fa-solid fa-calendar"></i> Anos letivos</a>
+          <a href="/professores" class="<%= (typeof currentPath !== 'undefined' ? currentPath : '').startsWith('/professores') ? 'is-active' : '' %>"><i class="fa-solid fa-chalkboard-user"></i> Professores</a>
+          <a href="/alunos" class="<%= (typeof currentPath !== 'undefined' ? currentPath : '').startsWith('/alunos') ? 'is-active' : '' %>"><i class="fa-solid fa-users"></i> Alunos</a>
           <span class="topbar__user"><i class="fa-solid fa-user"></i> <%= currentUser.username %></span>
           <form method="post" action="/logout" class="topbar__logout">
             <button type="submit"><i class="fa-solid fa-right-from-bracket"></i> Sair</button>
@@ -26,12 +26,12 @@
         </nav>
       <% } else if (typeof publicArea !== 'undefined' && publicArea) { %>
         <nav class="topbar__nav">
-          <a href="/turma" class="<%= currentPath === '/turma' ? 'is-active' : '' %>"><i class="fa-solid fa-house"></i> Início</a>
-          <a href="/turma/professores" class="<%= currentPath === '/turma/professores' ? 'is-active' : '' %>"><i class="fa-solid fa-chalkboard-user"></i> Professores</a>
-          <a href="/turma/cadeiras" class="<%= currentPath === '/turma/cadeiras' ? 'is-active' : '' %>"><i class="fa-solid fa-book"></i> Cadeiras</a>
-          <a href="/turma/tarefas" class="<%= currentPath.startsWith('/turma/tarefas') ? 'is-active' : '' %>"><i class="fa-solid fa-list-check"></i> Tarefas</a>
-          <a href="/turma/comunicados" class="<%= currentPath === '/turma/comunicados' ? 'is-active' : '' %>"><i class="fa-solid fa-bullhorn"></i> Comunicados</a>
-          <a href="/turma/emolumentos" class="<%= currentPath === '/turma/emolumentos' ? 'is-active' : '' %>"><i class="fa-solid fa-coins"></i> Emolumentos</a>
+          <a href="/turma" class="<%= (typeof currentPath !== 'undefined' ? currentPath : '') === '/turma' ? 'is-active' : '' %>"><i class="fa-solid fa-house"></i> Início</a>
+          <a href="/turma/professores" class="<%= (typeof currentPath !== 'undefined' ? currentPath : '') === '/turma/professores' ? 'is-active' : '' %>"><i class="fa-solid fa-chalkboard-user"></i> Professores</a>
+          <a href="/turma/cadeiras" class="<%= (typeof currentPath !== 'undefined' ? currentPath : '') === '/turma/cadeiras' ? 'is-active' : '' %>"><i class="fa-solid fa-book"></i> Cadeiras</a>
+          <a href="/turma/tarefas" class="<%= (typeof currentPath !== 'undefined' ? currentPath : '').startsWith('/turma/tarefas') ? 'is-active' : '' %>"><i class="fa-solid fa-list-check"></i> Tarefas</a>
+          <a href="/turma/comunicados" class="<%= (typeof currentPath !== 'undefined' ? currentPath : '') === '/turma/comunicados' ? 'is-active' : '' %>"><i class="fa-solid fa-bullhorn"></i> Comunicados</a>
+          <a href="/turma/emolumentos" class="<%= (typeof currentPath !== 'undefined' ? currentPath : '') === '/turma/emolumentos' ? 'is-active' : '' %>"><i class="fa-solid fa-coins"></i> Emolumentos</a>
           <a href="/login"><i class="fa-solid fa-user-tie"></i> Delegado</a>
         </nav>
       <% } %>
