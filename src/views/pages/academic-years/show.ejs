@@ -1,0 +1,64 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <p class="eyebrow"><a href="/anos-letivos">Anos letivos</a></p>
+  <h1><%= year.label %></h1>
+  <p>Um semestre só activa com no mínimo 3 cadeiras.</p>
+</section>
+
+<section class="card">
+  <h2>Rótulo</h2>
+  <form method="post" action="/anos-letivos/<%= year.id %>" class="form form--inline">
+    <label>
+      Ano letivo
+      <input type="text" name="label" value="<%= year.label %>" required />
+    </label>
+    <button type="submit" class="button">Guardar</button>
+  </form>
+</section>
+
+<section class="grid-2">
+  <% year.semesters.forEach((semester) => { %>
+    <article class="card">
+      <h2><%= semester.period === 'PRIMEIRO' ? '1.º semestre' : '2.º semestre' %></h2>
+      <p>
+        Estado:
+        <span class="tag <%= semester.status === 'ATIVO' ? 'tag--on' : '' %>">
+          <%= semester.status === 'ATIVO' ? 'activo' : 'inactivo' %>
+        </span>
+      </p>
+      <p>Cadeiras vinculadas: <strong><%= semester.disciplines.length %></strong></p>
+      <% if (semester.disciplines.length) { %>
+        <ul class="plain-list">
+          <% semester.disciplines.forEach((discipline) => { %>
+            <li><%= discipline.acronym %> — <%= discipline.name %></li>
+          <% }) %>
+        </ul>
+      <% } %>
+      <p>
+        <a class="button button--ghost" href="/semestres/<%= semester.id %>/cadeiras"><i class="fa-solid fa-book"></i> Gerir cadeiras</a>
+        <a class="button button--ghost" href="/semestres/<%= semester.id %>/tarefas"><i class="fa-solid fa-list-check"></i> Tarefas</a>
+        <a class="button button--ghost" href="/semestres/<%= semester.id %>/horario"><i class="fa-solid fa-clock"></i> Horário</a>
+        <a class="button button--ghost" href="/semestres/<%= semester.id %>/comunicados"><i class="fa-solid fa-bullhorn"></i> Comunicados</a>
+        <a class="button button--ghost" href="/semestres/<%= semester.id %>/emolumentos"><i class="fa-solid fa-coins"></i> Emolumentos</a>
+      </p>
+      <% if (semester.status !== 'ATIVO') { %>
+        <form method="post" action="/semestres/<%= semester.id %>/ativar">
+          <button type="submit" class="button">Activar semestre</button>
+        </form>
+      <% } else { %>
+        <p>Este é o semestre activo do sistema.</p>
+      <% } %>
+    </article>
+  <% }) %>
+</section>
+
+<section class="card">
+  <h2>Apagar</h2>
+  <p>Não é possível apagar se algum semestre estiver activo.</p>
+  <form method="post" action="/anos-letivos/<%= year.id %>/apagar">
+    <button type="submit" class="button button--ghost">Apagar ano letivo</button>
+  </form>
+</section>
+
+<%- include('../../partials/footer') %>

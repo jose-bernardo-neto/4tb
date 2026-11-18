@@ -1,0 +1,52 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <h1>Anos letivos</h1>
+  <p>Cada ano cria automaticamente o 1.º e o 2.º semestre. Só um semestre pode estar activo no sistema.</p>
+</section>
+
+<section class="card">
+  <h2>Novo ano</h2>
+  <form method="post" action="/anos-letivos" class="form form--inline">
+    <label>
+      Rótulo
+      <input type="text" name="label" placeholder="2025/2026" required />
+    </label>
+    <button type="submit" class="button">Criar</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Registos</h2>
+  <% if (!years.length) { %>
+    <p>Ainda não há anos letivos.</p>
+  <% } else { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Ano</th>
+          <th>Semestres</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% years.forEach((year) => { %>
+          <tr>
+            <td><%= year.label %></td>
+            <td>
+              <% year.semesters.forEach((semester) => { %>
+                <span class="tag <%= semester.status === 'ATIVO' ? 'tag--on' : '' %>">
+                  <%= semester.period === 'PRIMEIRO' ? '1.º' : '2.º' %>
+                  <%= semester.status === 'ATIVO' ? 'activo' : 'inactivo' %>
+                </span>
+              <% }) %>
+            </td>
+            <td><a class="button button--ghost" href="/anos-letivos/<%= year.id %>">Abrir</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<%- include('../../partials/footer') %>
