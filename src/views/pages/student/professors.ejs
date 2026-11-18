@@ -1,0 +1,33 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <h1>Professores</h1>
+  <p>Docentes das cadeiras do semestre activo.</p>
+</section>
+
+<section class="card">
+  <% if (!professors.length) { %>
+    <p>Não há professores neste semestre.</p>
+  <% } else { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Grau</th>
+          <th>Contacto</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% professors.forEach((professor) => { %>
+          <tr>
+            <td><%= professor.name %></td>
+            <td><%= professor.academicDegree %></td>
+            <td><%= professor.contact %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<%- include('../../partials/footer') %>

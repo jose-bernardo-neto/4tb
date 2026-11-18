@@ -1,0 +1,46 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <p class="eyebrow"><a href="/turma/tarefas">Tarefas</a></p>
+  <h1><%= assignment.title %></h1>
+  <p>
+    <%= assignment.discipline.acronym %> · <%= typeLabels[assignment.type] %> · até <%= assignment.dueDate %>
+    · <%= assignment.discipline.professor.name %>
+  </p>
+</section>
+
+<section class="card">
+  <h2>Descrição</h2>
+  <% if (assignment.description) { %>
+    <pre class="plain-text"><%= assignment.description %></pre>
+  <% } else { %>
+    <p>Sem descrição.</p>
+  <% } %>
+</section>
+
+<section class="card">
+  <h2>Anexos</h2>
+  <% if (!assignment.attachments.length) { %>
+    <p>Sem anexos.</p>
+  <% } else { %>
+    <ul class="attachment-list">
+      <% assignment.attachments.forEach((attachment) => { %>
+        <li class="attachment">
+          <p class="attachment__name"><%= attachment.originalName %></p>
+          <% if (isImageMime(attachment.mimeType)) { %>
+            <img
+              class="attachment__preview"
+              src="/turma/anexos/<%= attachment.id %>"
+              alt="<%= attachment.originalName %>"
+            />
+            <a class="button" href="/turma/anexos/<%= attachment.id %>/download">Baixar</a>
+          <% } else { %>
+            <a class="button" href="/turma/anexos/<%= attachment.id %>/download">Baixar</a>
+          <% } %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</section>
+
+<%- include('../../partials/footer') %>

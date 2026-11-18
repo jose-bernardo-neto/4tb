@@ -1,0 +1,23 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <h1><i class="fa-solid fa-graduation-cap"></i> Turma 4TB</h1>
+  <% if (semester) { %>
+    <p>Semestre activo: <%= semester.academicYear.label %> · <%= semester.period === 'PRIMEIRO' ? '1.º' : '2.º' %> semestre. Consulta apenas, sem login.</p>
+  <% } else { %>
+    <p>Ainda não há semestre activo. Quando o delegado activar um semestre, os dados aparecem aqui.</p>
+  <% } %>
+</section>
+
+<section class="card">
+  <h2>Consultar</h2>
+  <p>
+    <a class="button" href="/turma/professores"><i class="fa-solid fa-chalkboard-user"></i> Professores</a>
+    <a class="button button--ghost" href="/turma/cadeiras"><i class="fa-solid fa-book"></i> Cadeiras</a>
+    <a class="button button--ghost" href="/turma/tarefas"><i class="fa-solid fa-list-check"></i> Tarefas</a>
+    <a class="button button--ghost" href="/turma/comunicados"><i class="fa-solid fa-bullhorn"></i> Comunicados</a>
+    <a class="button button--ghost" href="/turma/emolumentos"><i class="fa-solid fa-coins"></i> Emolumentos</a>
+  </p>
+</section>
+
+<%- include('../../partials/footer') %>

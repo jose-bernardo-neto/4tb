@@ -1,0 +1,22 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <h1>Comunicados</h1>
+  <p>Avisos oficiais do semestre activo.</p>
+</section>
+
+<% if (!announcements.length) { %>
+  <section class="card">
+    <p>Não há comunicados neste semestre.</p>
+  </section>
+<% } else { %>
+  <% announcements.forEach((item) => { %>
+    <section class="card">
+      <p class="eyebrow"><%= item.date %></p>
+      <h2><%= item.title %></h2>
+      <pre class="plain-text"><%= item.body %></pre>
+    </section>
+  <% }) %>
+<% } %>
+
+<%- include('../../partials/footer') %>

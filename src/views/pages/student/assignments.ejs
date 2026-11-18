@@ -1,0 +1,37 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <h1>Tarefas</h1>
+  <p>Trabalhos, provas e projectos do semestre activo.</p>
+</section>
+
+<section class="card">
+  <% if (!assignments.length) { %>
+    <p>Não há tarefas neste semestre.</p>
+  <% } else { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Cadeira</th>
+          <th>Tipo</th>
+          <th>Limite</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% assignments.forEach((assignment) => { %>
+          <tr>
+            <td><%= assignment.title %></td>
+            <td><%= assignment.discipline.acronym %></td>
+            <td><%= typeLabels[assignment.type] %></td>
+            <td><%= assignment.dueDate %></td>
+            <td><a class="button button--ghost" href="/turma/tarefas/<%= assignment.id %>">Ver</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<%- include('../../partials/footer') %>

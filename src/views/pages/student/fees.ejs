@@ -1,0 +1,35 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <h1>Emolumentos</h1>
+  <p>Tabela do semestre activo.</p>
+</section>
+
+<section class="card">
+  <% if (!fees.length) { %>
+    <p>Não há emolumentos neste semestre.</p>
+  <% } else { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Valor</th>
+          <th>Prazo</th>
+          <th>Obs.</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% fees.forEach((fee) => { %>
+          <tr>
+            <td><%= fee.tipo %></td>
+            <td><%= fee.valor %></td>
+            <td><%= fee.prazo %></td>
+            <td><%= fee.obs %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,33 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <h1>Cadeiras</h1>
+  <p>Disciplinas do semestre activo.</p>
+</section>
+
+<section class="card">
+  <% if (!disciplines.length) { %>
+    <p>Não há cadeiras neste semestre.</p>
+  <% } else { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Sigla</th>
+          <th>Nome</th>
+          <th>Professor</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% disciplines.forEach((discipline) => { %>
+          <tr>
+            <td><%= discipline.acronym %></td>
+            <td><%= discipline.name %></td>
+            <td><%= discipline.professor.name %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<%- include('../../partials/footer') %>
