@@ -1,0 +1,17 @@
+<%- include('../partials/header') %>
+
+<section class="hero">
+  <h1><i class="fa-solid fa-house"></i> Início</h1>
+  <p>Olá, <%= currentUser.username %>. Gere o calendário, os professores e as cadeiras da turma.</p>
+</section>
+
+<section class="card">
+  <h2>Atalhos</h2>
+  <p>
+    <a class="button" href="/anos-letivos"><i class="fa-solid fa-calendar"></i> Anos letivos</a>
+    <a class="button button--ghost" href="/professores"><i class="fa-solid fa-chalkboard-user"></i> Professores</a>
+    <a class="button button--ghost" href="/alunos"><i class="fa-solid fa-users"></i> Alunos</a>
+  </p>
+</section>
+
+<%- include('../partials/footer') %>

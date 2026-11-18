@@ -1,0 +1,24 @@
+<%- include('../partials/header') %>
+
+<section class="auth-card card">
+  <p class="eyebrow">Acesso</p>
+  <h1><i class="fa-solid fa-right-to-bracket"></i> Entrar</h1>
+  <p>Use a conta do delegado para gerir a turma.</p>
+  <form method="post" action="/login" class="form">
+    <label>
+      Utilizador
+      <input type="text" name="username" autocomplete="username" required />
+    </label>
+    <label>
+      Senha
+      <input type="password" name="password" autocomplete="current-password" required />
+    </label>
+    <button type="submit" class="button"><i class="fa-solid fa-user-tie"></i> Entrar como delegado</button>
+  </form>
+  <p class="auth-alt">
+    <i class="fa-solid fa-graduation-cap"></i>
+    Estudante? <a href="/turma">Entrar sem conta</a> — só consulta (professores, cadeiras e tarefas).
+  </p>
+</section>
+
+<%- include('../partials/footer') %>

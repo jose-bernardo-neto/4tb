@@ -1,0 +1,26 @@
+<% if (!attachments.length) { %>
+  <p>Sem anexos.</p>
+<% } else { %>
+  <ul class="attachment-list">
+    <% attachments.forEach((attachment) => { %>
+      <li class="attachment">
+        <p class="attachment__name"><%= attachment.originalName %></p>
+        <% if (isImageMime(attachment.mimeType)) { %>
+          <img
+            class="attachment__preview"
+            src="/anexos/<%= attachment.id %>"
+            alt="<%= attachment.originalName %>"
+          />
+          <a class="button" href="/anexos/<%= attachment.id %>/download">Baixar</a>
+        <% } else { %>
+          <a class="button" href="/anexos/<%= attachment.id %>/download">Baixar</a>
+        <% } %>
+        <% if (typeof allowDelete !== 'undefined' && allowDelete) { %>
+          <form method="post" action="/anexos/<%= attachment.id %>/apagar" class="attachment__delete">
+            <button type="submit" class="button button--ghost">Remover anexo</button>
+          </form>
+        <% } %>
+      </li>
+    <% }) %>
+  </ul>
+<% } %>
