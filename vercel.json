@@ -1,7 +1,7 @@
 {
   "functions": {
     "api/index.ts": {
-      "includeFiles": "src/{views,public}/**"
+      "includeFiles": "src/**"
     }
   },
   "rewrites": [

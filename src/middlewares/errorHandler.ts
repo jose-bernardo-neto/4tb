@@ -2,14 +2,47 @@ import { NextFunction, Request, Response } from "express";
 import { MulterError } from "multer";
 import { AppError } from "../errors/AppError";
 
+function escapeHtml(value: string): string {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;");
+}
+
+function renderOrFallback(
+  res: Response,
+  status: number,
+  title: string,
+  message: string,
+): void {
+  const appName = res.locals.appName ?? "4TB";
+  const currentPath = res.locals.currentPath ?? "";
+  res.status(status);
+  res.render(
+    "pages/error",
+    { title, status, message, appName, currentPath },
+    (renderErr, html) => {
+      if (renderErr || !html) {
+        console.error(renderErr);
+        res.type("html").send(`<!doctype html>
+<html lang="pt">
+  <head><meta charset="utf-8"><title>${escapeHtml(title)}</title></head>
+  <body>
+    <h1>${status} · ${escapeHtml(title)}</h1>
+    <p>${escapeHtml(message)}</p>
+    <p><a href="/login">Voltar ao login</a></p>
+  </body>
+</html>`);
+        return;
+      }
+      res.send(html);
+    },
+  );
+}
+
 export function notFound(_req: Request, res: Response): void {
-  res.status(404).render("pages/error", {
-    title: "Não encontrado",
-    status: 404,
-    message: "A página pedida não existe.",
-    appName: res.locals.appName ?? "4TB",
-    currentPath: res.locals.currentPath ?? "",
-  });
+  renderOrFallback(res, 404, "Não encontrado", "A página pedida não existe.");
 }
 
 export function errorHandler(err: unknown, _req: Request, res: Response, _next: NextFunction): void {
@@ -18,13 +51,7 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
       err.code === "LIMIT_FILE_SIZE"
         ? "O ficheiro excede o tamanho máximo permitido."
         : "Falha no envio do ficheiro.";
-    res.status(400).render("pages/error", {
-      title: "Erro",
-      status: 400,
-      message,
-      appName: res.locals.appName ?? "4TB",
-      currentPath: res.locals.currentPath ?? "",
-    });
+    renderOrFallback(res, 400, "Erro", message);
     return;
   }
 
@@ -40,11 +67,5 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
     console.error(err);
   }
 
-  res.status(status).render("pages/error", {
-    title: status >= 500 ? "Erro interno" : "Erro",
-    status,
-    message,
-    appName: res.locals.appName ?? "4TB",
-    currentPath: res.locals.currentPath ?? "",
-  });
+  renderOrFallback(res, status, status >= 500 ? "Erro interno" : "Erro", message);
 }

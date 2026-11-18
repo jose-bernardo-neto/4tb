@@ -1,9 +1,8 @@
-import path from "node:path";
 import cookieParser from "cookie-parser";
 import express from "express";
 import { ensureReady } from "./config/bootstrap";
 import { env } from "./config/env";
-import { ROOT_DIR } from "./config/paths";
+import { resolvePublicDir, resolveViewsDir } from "./config/paths";
 import { ensureAuthenticated, loadCurrentUser } from "./middlewares/auth";
 import { errorHandler, notFound } from "./middlewares/errorHandler";
 import { flashMiddleware } from "./middlewares/flash";
@@ -15,7 +14,7 @@ export function createApp() {
   app.set("trust proxy", 1);
 
   app.set("view engine", "ejs");
-  app.set("views", path.join(ROOT_DIR, "src", "views"));
+  app.set("views", resolveViewsDir());
   app.locals.appName = "4TB";
 
   app.use((req, res, next) => {
@@ -34,7 +33,7 @@ export function createApp() {
     next();
   });
 
-  app.use(express.static(path.join(ROOT_DIR, "src", "public")));
+  app.use(express.static(resolvePublicDir()));
   app.get("/favicon.ico", (_req, res) => {
     res.status(204).end();
   });
