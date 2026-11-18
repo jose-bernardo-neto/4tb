@@ -1,0 +1,66 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <p class="eyebrow">
+    <a href="/anos-letivos/<%= semester.academicYearId %>"><%= semester.academicYear.label %></a>
+  </p>
+  <h1>Cadeiras · <%= semester.period === 'PRIMEIRO' ? '1.º' : '2.º' %> semestre</h1>
+  <p>São necessárias pelo menos 3 cadeiras para activar este semestre. Sigla única neste semestre.</p>
+</section>
+
+<section class="card">
+  <h2>Nova cadeira</h2>
+  <% if (!professors.length) { %>
+    <p>Cadastre primeiro um <a href="/professores">professor</a>.</p>
+  <% } else { %>
+    <form method="post" action="/semestres/<%= semester.id %>/cadeiras" class="form">
+      <label>
+        Nome
+        <input type="text" name="name" placeholder="Análise Matemática" required />
+      </label>
+      <label>
+        Sigla
+        <input type="text" name="acronym" placeholder="AM" required />
+      </label>
+      <label>
+        Professor
+        <select name="professorId" required>
+          <% professors.forEach((professor) => { %>
+            <option value="<%= professor.id %>"><%= professor.name %></option>
+          <% }) %>
+        </select>
+      </label>
+      <button type="submit" class="button">Cadastrar</button>
+    </form>
+  <% } %>
+</section>
+
+<section class="card">
+  <h2>Registos (<%= disciplines.length %>)</h2>
+  <% if (!disciplines.length) { %>
+    <p>Ainda não há cadeiras neste semestre.</p>
+  <% } else { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Sigla</th>
+          <th>Nome</th>
+          <th>Professor</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% disciplines.forEach((discipline) => { %>
+          <tr>
+            <td><%= discipline.acronym %></td>
+            <td><%= discipline.name %></td>
+            <td><%= discipline.professor.name %></td>
+            <td><a class="button button--ghost" href="/cadeiras/<%= discipline.id %>">Abrir</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<%- include('../../partials/footer') %>

@@ -1,0 +1,65 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <p class="eyebrow">
+    <a href="/semestres/<%= discipline.semesterId %>/cadeiras">
+      <%= discipline.semester.academicYear.label %> ·
+      <%= discipline.semester.period === 'PRIMEIRO' ? '1.º' : '2.º' %> semestre
+    </a>
+  </p>
+  <h1><%= discipline.acronym %></h1>
+  <p><%= discipline.name %></p>
+</section>
+
+<section class="card">
+  <h2>Dados</h2>
+  <form method="post" action="/cadeiras/<%= discipline.id %>" class="form">
+    <label>
+      Nome
+      <input type="text" name="name" value="<%= discipline.name %>" required />
+    </label>
+    <label>
+      Sigla
+      <input type="text" name="acronym" value="<%= discipline.acronym %>" required />
+    </label>
+    <label>
+      Professor
+      <select name="professorId" required>
+        <% professors.forEach((professor) => { %>
+          <option value="<%= professor.id %>" <%= professor.id === discipline.professorId ? 'selected' : '' %>>
+            <%= professor.name %>
+          </option>
+        <% }) %>
+      </select>
+    </label>
+    <button type="submit" class="button">Guardar</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Tarefas</h2>
+  <% if (!discipline.assignments || !discipline.assignments.length) { %>
+    <p>Ainda não há tarefas nesta cadeira.</p>
+  <% } else { %>
+    <ul class="plain-list">
+      <% discipline.assignments.forEach((assignment) => { %>
+        <li>
+          <a href="/tarefas/<%= assignment.id %>"><%= assignment.title %></a>
+          — até <%= assignment.dueDate %>
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+  <p>
+    <a class="button button--ghost" href="/semestres/<%= discipline.semesterId %>/tarefas">Gerir tarefas do semestre</a>
+  </p>
+</section>
+
+<section class="card">
+  <h2>Apagar</h2>
+  <form method="post" action="/cadeiras/<%= discipline.id %>/apagar">
+    <button type="submit" class="button button--ghost">Apagar cadeira</button>
+  </form>
+</section>
+
+<%- include('../../partials/footer') %>

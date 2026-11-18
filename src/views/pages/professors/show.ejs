@@ -1,0 +1,53 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <p class="eyebrow"><a href="/professores">Professores</a></p>
+  <h1><%= professor.name %></h1>
+</section>
+
+<section class="card">
+  <h2>Dados</h2>
+  <form method="post" action="/professores/<%= professor.id %>" class="form">
+    <label>
+      Nome
+      <input type="text" name="name" value="<%= professor.name %>" required />
+    </label>
+    <label>
+      Grau académico
+      <input type="text" name="academicDegree" value="<%= professor.academicDegree %>" required />
+    </label>
+    <label>
+      Contacto / e-mail
+      <input type="text" name="contact" value="<%= professor.contact %>" required />
+    </label>
+    <button type="submit" class="button">Guardar</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Cadeiras</h2>
+  <% if (!professor.disciplines.length) { %>
+    <p>Este professor ainda não está vinculado a cadeiras.</p>
+  <% } else { %>
+    <ul class="plain-list">
+      <% professor.disciplines.forEach((discipline) => { %>
+        <li>
+          <a href="/cadeiras/<%= discipline.id %>"><%= discipline.acronym %></a>
+          — <%= discipline.name %>
+          (<%= discipline.semester.academicYear.label %>,
+          <%= discipline.semester.period === 'PRIMEIRO' ? '1.º' : '2.º' %> semestre)
+        </li>
+      <% }) %>
+    </ul>
+  <% } %>
+</section>
+
+<section class="card">
+  <h2>Apagar</h2>
+  <p>Só é possível apagar se não houver cadeiras associadas.</p>
+  <form method="post" action="/professores/<%= professor.id %>/apagar">
+    <button type="submit" class="button button--ghost">Apagar professor</button>
+  </form>
+</section>
+
+<%- include('../../partials/footer') %>

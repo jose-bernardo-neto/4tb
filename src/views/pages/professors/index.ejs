@@ -1,0 +1,57 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <h1>Professores</h1>
+  <p>Cada cadeira terá um único professor responsável.</p>
+</section>
+
+<section class="card">
+  <h2>Novo professor</h2>
+  <form method="post" action="/professores" class="form">
+    <label>
+      Nome
+      <input type="text" name="name" required />
+    </label>
+    <label>
+      Grau académico
+      <input type="text" name="academicDegree" placeholder="Mestre, Doutor…" required />
+    </label>
+    <label>
+      Contacto / e-mail
+      <input type="text" name="contact" required />
+    </label>
+    <button type="submit" class="button">Cadastrar</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Registos</h2>
+  <% if (!professors.length) { %>
+    <p>Ainda não há professores.</p>
+  <% } else { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Grau</th>
+          <th>Contacto</th>
+          <th>Cadeiras</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% professors.forEach((professor) => { %>
+          <tr>
+            <td><%= professor.name %></td>
+            <td><%= professor.academicDegree %></td>
+            <td><%= professor.contact %></td>
+            <td><%= professor.disciplines.length %></td>
+            <td><a class="button button--ghost" href="/professores/<%= professor.id %>">Abrir</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<%- include('../../partials/footer') %>
