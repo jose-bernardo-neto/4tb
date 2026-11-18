@@ -9,7 +9,7 @@ export function resolveFromRoot(target: string): string {
 
 export function ensureDirectories(): void {
   const dirs =
-    process.env.VERCEL === "1"
+    Boolean(process.env.VERCEL)
       ? ["/tmp", "/tmp/uploads"]
       : [
           path.join(ROOT_DIR, "data"),
