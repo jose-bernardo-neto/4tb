@@ -1,0 +1,37 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <p class="eyebrow">
+    <a href="/semestres/<%= announcement.semesterId %>/comunicados">Comunicados</a>
+  </p>
+  <h1><%= announcement.title %></h1>
+  <p><%= announcement.date %></p>
+</section>
+
+<section class="card">
+  <h2>Dados</h2>
+  <form method="post" action="/comunicados/<%= announcement.id %>" class="form">
+    <label>
+      Título
+      <input type="text" name="title" value="<%= announcement.title %>" required />
+    </label>
+    <label>
+      Corpo
+      <textarea name="body" rows="6" required><%= announcement.body %></textarea>
+    </label>
+    <label>
+      Data
+      <input type="date" name="date" value="<%= announcement.date %>" required />
+    </label>
+    <button type="submit" class="button">Guardar</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Apagar</h2>
+  <form method="post" action="/comunicados/<%= announcement.id %>/apagar">
+    <button type="submit" class="button button--ghost">Apagar comunicado</button>
+  </form>
+</section>
+
+<%- include('../../partials/footer') %>

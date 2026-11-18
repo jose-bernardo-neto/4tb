@@ -1,0 +1,63 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <p class="eyebrow">
+    <a href="/anos-letivos/<%= semester.academicYearId %>"><%= semester.academicYear.label %></a>
+  </p>
+  <h1>Emolumentos · <%= semester.period === 'PRIMEIRO' ? '1.º' : '2.º' %> semestre</h1>
+</section>
+
+<section class="card">
+  <h2>Novo emolumento</h2>
+  <form method="post" action="/semestres/<%= semester.id %>/emolumentos" class="form">
+    <label>
+      Tipo
+      <input type="text" name="tipo" placeholder="Propina, taxa…" required />
+    </label>
+    <label>
+      Valor
+      <input type="text" name="valor" placeholder="15000" required />
+    </label>
+    <label>
+      Prazo
+      <input type="date" name="prazo" required />
+    </label>
+    <label>
+      Observação
+      <input type="text" name="obs" />
+    </label>
+    <button type="submit" class="button">Cadastrar</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Tabela (<%= fees.length %>)</h2>
+  <% if (!fees.length) { %>
+    <p>Ainda não há emolumentos neste semestre.</p>
+  <% } else { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Tipo</th>
+          <th>Valor</th>
+          <th>Prazo</th>
+          <th>Obs.</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% fees.forEach((fee) => { %>
+          <tr>
+            <td><%= fee.tipo %></td>
+            <td><%= fee.valor %></td>
+            <td><%= fee.prazo %></td>
+            <td><%= fee.obs %></td>
+            <td><a class="button button--ghost" href="/emolumentos/<%= fee.id %>">Abrir</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<%- include('../../partials/footer') %>

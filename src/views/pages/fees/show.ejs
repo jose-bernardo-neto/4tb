@@ -1,0 +1,40 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <p class="eyebrow">
+    <a href="/semestres/<%= fee.semesterId %>/emolumentos">Emolumentos</a>
+  </p>
+  <h1><%= fee.tipo %></h1>
+</section>
+
+<section class="card">
+  <h2>Dados</h2>
+  <form method="post" action="/emolumentos/<%= fee.id %>" class="form">
+    <label>
+      Tipo
+      <input type="text" name="tipo" value="<%= fee.tipo %>" required />
+    </label>
+    <label>
+      Valor
+      <input type="text" name="valor" value="<%= fee.valor %>" required />
+    </label>
+    <label>
+      Prazo
+      <input type="date" name="prazo" value="<%= fee.prazo %>" required />
+    </label>
+    <label>
+      Observação
+      <input type="text" name="obs" value="<%= fee.obs %>" />
+    </label>
+    <button type="submit" class="button">Guardar</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Apagar</h2>
+  <form method="post" action="/emolumentos/<%= fee.id %>/apagar">
+    <button type="submit" class="button button--ghost">Apagar emolumento</button>
+  </form>
+</section>
+
+<%- include('../../partials/footer') %>

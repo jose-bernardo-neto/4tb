@@ -1,0 +1,55 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <p class="eyebrow">
+    <a href="/anos-letivos/<%= semester.academicYearId %>"><%= semester.academicYear.label %></a>
+  </p>
+  <h1>Comunicados · <%= semester.period === 'PRIMEIRO' ? '1.º' : '2.º' %> semestre</h1>
+</section>
+
+<section class="card">
+  <h2>Novo comunicado</h2>
+  <form method="post" action="/semestres/<%= semester.id %>/comunicados" class="form">
+    <label>
+      Título
+      <input type="text" name="title" required />
+    </label>
+    <label>
+      Corpo
+      <textarea name="body" rows="5" required></textarea>
+    </label>
+    <label>
+      Data
+      <input type="date" name="date" required />
+    </label>
+    <button type="submit" class="button">Publicar</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Registos (<%= announcements.length %>)</h2>
+  <% if (!announcements.length) { %>
+    <p>Ainda não há comunicados neste semestre.</p>
+  <% } else { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Data</th>
+          <th>Título</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% announcements.forEach((item) => { %>
+          <tr>
+            <td><%= item.date %></td>
+            <td><%= item.title %></td>
+            <td><a class="button button--ghost" href="/comunicados/<%= item.id %>">Abrir</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<%- include('../../partials/footer') %>
