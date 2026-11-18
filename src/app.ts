@@ -24,6 +24,11 @@ export function createApp() {
     next();
   });
 
+  app.use(express.static(path.join(ROOT_DIR, "src", "public")));
+  app.get("/favicon.ico", (_req, res) => {
+    res.status(204).end();
+  });
+
   app.use((req, res, next) => {
     void ensureReady().then(() => next()).catch(next);
   });
@@ -31,7 +36,6 @@ export function createApp() {
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
   app.use(cookieParser());
-  app.use(express.static(path.join(ROOT_DIR, "src", "public")));
   app.use(flashMiddleware);
   app.use(loadCurrentUser);
 

@@ -30,7 +30,11 @@ export function errorHandler(err: unknown, _req: Request, res: Response, _next: 
 
   const isAppError = err instanceof AppError;
   const status = isAppError ? err.statusCode : 500;
-  const message = isAppError ? err.message : "Erro interno do servidor.";
+  const message = isAppError
+    ? err.message
+    : err instanceof Error
+      ? err.message
+      : "Erro interno do servidor.";
 
   if (!isAppError) {
     console.error(err);

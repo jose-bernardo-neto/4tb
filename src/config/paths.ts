@@ -8,15 +8,14 @@ export function resolveFromRoot(target: string): string {
 }
 
 export function ensureDirectories(): void {
-  const dirs = [
-    path.join(ROOT_DIR, "data"),
-    path.join(ROOT_DIR, "uploads"),
-    path.join(ROOT_DIR, "src", "public"),
-  ];
-
-  if (process.env.VERCEL === "1") {
-    dirs.push("/tmp", "/tmp/uploads");
-  }
+  const dirs =
+    process.env.VERCEL === "1"
+      ? ["/tmp", "/tmp/uploads"]
+      : [
+          path.join(ROOT_DIR, "data"),
+          path.join(ROOT_DIR, "uploads"),
+          path.join(ROOT_DIR, "src", "public"),
+        ];
 
   for (const dir of dirs) {
     fs.mkdirSync(dir, { recursive: true });
