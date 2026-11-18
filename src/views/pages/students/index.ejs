@@ -1,0 +1,80 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <h1>Alunos</h1>
+  <p>NP ligado ao contacto WhatsApp. O CSV usa o cabeçalho <code>contato,np,nome</code>. Contactos são normalizados para 244…</p>
+</section>
+
+<% if (typeof report !== 'undefined' && report) { %>
+  <section class="card">
+    <h2>Importação</h2>
+    <p>Inseridos: <%= report.inserted %> · Actualizados: <%= report.updated %> · Saltados: <%= report.skipped.length %></p>
+    <% if (report.skipped.length) { %>
+      <ul class="plain-list">
+        <% report.skipped.forEach((item) => { %>
+          <li>Linha <%= item.line %>: <%= item.reason %></li>
+        <% }) %>
+      </ul>
+    <% } %>
+  </section>
+<% } %>
+
+<section class="card">
+  <h2>Importar CSV</h2>
+  <form method="post" action="/alunos/importar" class="form form--inline" enctype="multipart/form-data">
+    <label>
+      Ficheiro
+      <input type="file" name="file" accept=".csv,text/csv" required />
+    </label>
+    <button type="submit" class="button">Importar</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Novo aluno</h2>
+  <form method="post" action="/alunos" class="form">
+    <label>
+      Nome
+      <input type="text" name="name" required />
+    </label>
+    <label>
+      NP
+      <input type="text" name="np" required />
+    </label>
+    <label>
+      Contacto
+      <input type="text" name="contact" placeholder="923123456 ou +244923123456" required />
+    </label>
+    <button type="submit" class="button">Cadastrar</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Registos (<%= students.length %>)</h2>
+  <% if (!students.length) { %>
+    <p>Ainda não há alunos.</p>
+  <% } else { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>NP</th>
+          <th>Contacto</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% students.forEach((student) => { %>
+          <tr>
+            <td><%= student.name %></td>
+            <td><%= student.np %></td>
+            <td><%= student.contact %></td>
+            <td><a class="button button--ghost" href="/alunos/<%= student.id %>">Abrir</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<%- include('../../partials/footer') %>

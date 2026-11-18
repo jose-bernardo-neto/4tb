@@ -1,0 +1,35 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <p class="eyebrow"><a href="/alunos">Alunos</a></p>
+  <h1><%= student.name %></h1>
+  <p>NP <%= student.np %> · <%= student.contact %></p>
+</section>
+
+<section class="card">
+  <h2>Dados</h2>
+  <form method="post" action="/alunos/<%= student.id %>" class="form">
+    <label>
+      Nome
+      <input type="text" name="name" value="<%= student.name %>" required />
+    </label>
+    <label>
+      NP
+      <input type="text" name="np" value="<%= student.np %>" required />
+    </label>
+    <label>
+      Contacto
+      <input type="text" name="contact" value="<%= student.contact %>" required />
+    </label>
+    <button type="submit" class="button">Guardar</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Apagar</h2>
+  <form method="post" action="/alunos/<%= student.id %>/apagar">
+    <button type="submit" class="button button--ghost">Apagar aluno</button>
+  </form>
+</section>
+
+<%- include('../../partials/footer') %>
