@@ -1,0 +1,56 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <p class="eyebrow">
+    <a href="/semestres/<%= assignment.discipline.semesterId %>/tarefas">
+      <%= assignment.discipline.semester.academicYear.label %> · tarefas
+    </a>
+  </p>
+  <h1><%= assignment.title %></h1>
+  <p><%= assignment.discipline.acronym %> · <%= typeLabels[assignment.type] %> · até <%= assignment.dueDate %></p>
+</section>
+
+<section class="card">
+  <h2>Dados</h2>
+  <form method="post" action="/tarefas/<%= assignment.id %>" class="form" enctype="multipart/form-data">
+    <label>
+      Título
+      <input type="text" name="title" value="<%= assignment.title %>" required />
+    </label>
+    <label>
+      Descrição
+      <textarea name="description" rows="4"><%= assignment.description %></textarea>
+    </label>
+    <label>
+      Tipo
+      <select name="type" required>
+        <% types.forEach((type) => { %>
+          <option value="<%= type %>" <%= type === assignment.type ? 'selected' : '' %>><%= typeLabels[type] %></option>
+        <% }) %>
+      </select>
+    </label>
+    <label>
+      Data limite
+      <input type="date" name="dueDate" value="<%= assignment.dueDate %>" required />
+    </label>
+    <label>
+      Adicionar anexos
+      <input type="file" name="attachments" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg" multiple />
+    </label>
+    <button type="submit" class="button">Guardar</button>
+  </form>
+</section>
+
+<section class="card">
+  <h2>Anexos</h2>
+  <%- include('../../partials/attachments', { attachments: assignment.attachments, isImageMime, allowDelete: true }) %>
+</section>
+
+<section class="card">
+  <h2>Apagar</h2>
+  <form method="post" action="/tarefas/<%= assignment.id %>/apagar">
+    <button type="submit" class="button button--ghost">Apagar tarefa</button>
+  </form>
+</section>
+
+<%- include('../../partials/footer') %>

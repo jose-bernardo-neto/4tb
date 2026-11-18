@@ -1,0 +1,86 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <p class="eyebrow">
+    <a href="/anos-letivos/<%= semester.academicYearId %>"><%= semester.academicYear.label %></a>
+  </p>
+  <h1>Tarefas · <%= semester.period === 'PRIMEIRO' ? '1.º' : '2.º' %> semestre</h1>
+  <p>Fotos mostram pré-visualização e download. PDF e outros formatos só permitem baixar.</p>
+</section>
+
+<section class="card">
+  <h2>Nova tarefa</h2>
+  <% if (!disciplines.length) { %>
+    <p>Cadastre primeiro <a href="/semestres/<%= semester.id %>/cadeiras">cadeiras</a> neste semestre.</p>
+  <% } else { %>
+    <form method="post" action="/semestres/<%= semester.id %>/tarefas" class="form" enctype="multipart/form-data">
+      <label>
+        Cadeira
+        <select name="disciplineId" required>
+          <% disciplines.forEach((discipline) => { %>
+            <option value="<%= discipline.id %>"><%= discipline.acronym %> — <%= discipline.name %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label>
+        Título
+        <input type="text" name="title" required />
+      </label>
+      <label>
+        Descrição
+        <textarea name="description" rows="4"></textarea>
+      </label>
+      <label>
+        Tipo
+        <select name="type" required>
+          <% types.forEach((type) => { %>
+            <option value="<%= type %>"><%= typeLabels[type] %></option>
+          <% }) %>
+        </select>
+      </label>
+      <label>
+        Data limite
+        <input type="date" name="dueDate" required />
+      </label>
+      <label>
+        Anexos (PDF, PNG ou JPG)
+        <input type="file" name="attachments" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg" multiple />
+      </label>
+      <button type="submit" class="button">Cadastrar</button>
+    </form>
+  <% } %>
+</section>
+
+<section class="card">
+  <h2>Registos (<%= assignments.length %>)</h2>
+  <% if (!assignments.length) { %>
+    <p>Ainda não há tarefas neste semestre.</p>
+  <% } else { %>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Cadeira</th>
+          <th>Tipo</th>
+          <th>Limite</th>
+          <th>Anexos</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% assignments.forEach((assignment) => { %>
+          <tr>
+            <td><%= assignment.title %></td>
+            <td><%= assignment.discipline.acronym %></td>
+            <td><%= typeLabels[assignment.type] %></td>
+            <td><%= assignment.dueDate %></td>
+            <td><%= assignment.attachments.length %></td>
+            <td><a class="button button--ghost" href="/tarefas/<%= assignment.id %>">Abrir</a></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } %>
+</section>
+
+<%- include('../../partials/footer') %>
