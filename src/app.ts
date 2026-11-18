@@ -12,10 +12,20 @@ import { router } from "./routes";
 export function createApp() {
   const app = express();
   app.disable("x-powered-by");
+  app.set("trust proxy", 1);
 
   app.set("view engine", "ejs");
   app.set("views", path.join(ROOT_DIR, "src", "views"));
   app.locals.appName = "4TB";
+
+  app.use((req, res, next) => {
+    for (const prefix of ["/src/app", "/api"]) {
+      if (req.url === prefix || req.url.startsWith(`${prefix}/`)) {
+        req.url = req.url.slice(prefix.length) || "/";
+      }
+    }
+    next();
+  });
 
   app.use((req, res, next) => {
     res.locals.appName = "4TB";

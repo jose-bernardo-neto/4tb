@@ -1,8 +1,13 @@
 {
   "functions": {
-    "src/app.ts": {
+    "api/index.ts": {
       "includeFiles": "src/{views,public}/**"
     }
   },
-  "rewrites": [{ "source": "/(.*)", "destination": "/src/app" }]
+  "rewrites": [
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/api"
+    }
+  ]
 }

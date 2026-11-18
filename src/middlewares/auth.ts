@@ -24,7 +24,13 @@ export function loadCurrentUser(req: Request, res: Response, next: NextFunction)
 
 export function ensureAuthenticated(req: Request, res: Response, next: NextFunction): void {
   const path = req.path ?? "";
-  if (path === "/turma" || path.startsWith("/turma/")) {
+  if (
+    path === "/login" ||
+    path === "/turma" ||
+    path.startsWith("/turma/") ||
+    path.startsWith("/css/") ||
+    path.startsWith("/assets/")
+  ) {
     next();
     return;
   }
