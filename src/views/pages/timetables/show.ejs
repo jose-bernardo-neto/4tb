@@ -1,0 +1,54 @@
+<%- include('../../partials/header') %>
+
+<section class="hero">
+  <p class="eyebrow">
+    <a href="/anos-letivos/<%= semester.academicYearId %>"><%= semester.academicYear.label %></a>
+  </p>
+  <h1>Horário · <%= semester.period === 'PRIMEIRO' ? '1.º' : '2.º' %> semestre</h1>
+  <p>Texto e/ou ficheiro (PDF, PNG ou JPG). Um ficheiro novo substitui o anterior.</p>
+</section>
+
+<section class="card">
+  <h2>Conteúdo</h2>
+  <form method="post" action="/semestres/<%= semester.id %>/horario" class="form" enctype="multipart/form-data">
+    <label>
+      Texto
+      <textarea name="content" rows="8"><%= timetable ? timetable.content : '' %></textarea>
+    </label>
+    <label>
+      Ficheiro
+      <input type="file" name="file" accept=".pdf,.png,.jpg,.jpeg,application/pdf,image/png,image/jpeg" />
+    </label>
+    <% if (timetable && timetable.storedName) { %>
+      <label class="check">
+        <input type="checkbox" name="removeFile" value="1" />
+        Remover ficheiro actual
+      </label>
+    <% } %>
+    <button type="submit" class="button">Guardar</button>
+  </form>
+</section>
+
+<% if (timetable && (timetable.content || timetable.storedName)) { %>
+  <section class="card">
+    <h2>Pré-visualização</h2>
+    <% if (timetable.content) { %>
+      <pre class="plain-text"><%= timetable.content %></pre>
+    <% } %>
+    <% if (timetable.storedName) { %>
+      <p class="attachment__name"><%= timetable.originalName %></p>
+      <% if (isImageMime(timetable.mimeType || '')) { %>
+        <img
+          class="attachment__preview"
+          src="/semestres/<%= semester.id %>/horario/ficheiro"
+          alt="<%= timetable.originalName %>"
+        />
+        <a class="button" href="/semestres/<%= semester.id %>/horario/ficheiro/download">Baixar</a>
+      <% } else { %>
+        <a class="button" href="/semestres/<%= semester.id %>/horario/ficheiro/download">Baixar</a>
+      <% } %>
+    <% } %>
+  </section>
+<% } %>
+
+<%- include('../../partials/footer') %>
