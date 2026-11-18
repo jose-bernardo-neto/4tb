@@ -14,6 +14,10 @@ export function ensureDirectories(): void {
     path.join(ROOT_DIR, "src", "public"),
   ];
 
+  if (process.env.VERCEL === "1") {
+    dirs.push("/tmp", "/tmp/uploads");
+  }
+
   for (const dir of dirs) {
     fs.mkdirSync(dir, { recursive: true });
   }

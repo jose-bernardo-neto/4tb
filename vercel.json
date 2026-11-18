@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "src/app.ts": {
+      "includeFiles": "src/{views,public}/**"
+    }
+  },
+  "rewrites": [{ "source": "/(.*)", "destination": "/src/app" }]
+}

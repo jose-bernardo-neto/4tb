@@ -98,6 +98,8 @@ pnpm dev
 
 Abre `http://localhost:3000` (redirecciona para `/login`). No arranque o sistema corre migrations, activa WAL no SQLite e garante a conta padrão do delegado.
 
+Na Vercel define `JWT_SECRET`, `DEFAULT_ADMIN_USER` e `DEFAULT_ADMIN_PASS`. O SQLite e os uploads ficam em `/tmp` (efémeros entre deploys).
+
 ```bash
 pnpm seed              # reexecuta o seed à mão
 pnpm migration:run

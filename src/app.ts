@@ -1,6 +1,7 @@
 import path from "node:path";
 import cookieParser from "cookie-parser";
 import express from "express";
+import { ensureReady } from "./config/bootstrap";
 import { env } from "./config/env";
 import { ROOT_DIR } from "./config/paths";
 import { ensureAuthenticated, loadCurrentUser } from "./middlewares/auth";
@@ -14,6 +15,10 @@ export function createApp() {
 
   app.set("view engine", "ejs");
   app.set("views", path.join(ROOT_DIR, "src", "views"));
+
+  app.use((req, res, next) => {
+    void ensureReady().then(() => next()).catch(next);
+  });
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json());
@@ -36,3 +41,6 @@ export function createApp() {
 
   return app;
 }
+
+const app = createApp();
+export default app;

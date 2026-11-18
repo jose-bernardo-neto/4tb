@@ -13,20 +13,28 @@ function required(name: string): string {
 }
 
 const nodeEnv = process.env.NODE_ENV ?? "development";
+const onVercel = process.env.VERCEL === "1";
+
+function resolveDbPath(): string {
+  if (process.env.DB_PATH === ":memory:") {
+    return ":memory:";
+  }
+  if (process.env.DB_PATH) {
+    return resolveFromRoot(process.env.DB_PATH);
+  }
+  return onVercel ? "/tmp/4tb.sqlite" : resolveFromRoot("./data/4tb.sqlite");
+}
 
 export const env = {
   PORT: Number(process.env.PORT ?? 3000),
   NODE_ENV: nodeEnv,
   isProd: nodeEnv === "production",
-  DB_PATH:
-    process.env.DB_PATH === ":memory:"
-      ? ":memory:"
-      : resolveFromRoot(process.env.DB_PATH ?? "./data/4tb.sqlite"),
+  DB_PATH: resolveDbPath(),
   JWT_SECRET: required("JWT_SECRET"),
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ?? "8h",
   COOKIE_NAME: process.env.COOKIE_NAME ?? "4tb_token",
   DEFAULT_ADMIN_USER: required("DEFAULT_ADMIN_USER"),
   DEFAULT_ADMIN_PASS: required("DEFAULT_ADMIN_PASS"),
-  UPLOAD_DIR: resolveFromRoot(process.env.UPLOAD_DIR ?? "./uploads"),
+  UPLOAD_DIR: resolveFromRoot(process.env.UPLOAD_DIR ?? (onVercel ? "/tmp/uploads" : "./uploads")),
   MAX_UPLOAD_BYTES: Number(process.env.MAX_UPLOAD_BYTES ?? 5 * 1024 * 1024),
 };
