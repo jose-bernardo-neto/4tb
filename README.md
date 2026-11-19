@@ -27,7 +27,7 @@ Documentação em [`docs/`](docs/README.md):
 | Pacotes | pnpm |
 | Web | Express.js + EJS |
 | UI | HTML + CSS próprio (sem framework) |
-| Banco | SQLite3 + TypeORM, modo WAL |
+| Banco | TypeORM com driver intercambiável: SQLite3 (dev/testes, modo WAL) ou Supabase Postgres (produção) |
 | Auth | JWT em cookie `httpOnly` + `bcryptjs` |
 | Upload | Multer (horário e anexos permitidos) |
 | Testes | Vitest (unitário) + Supertest (E2E) |
@@ -74,6 +74,8 @@ src/
 
 Princípios: SOLID, DRY, OOP, erros via `AppError` + middleware global, migrations desde o dia 1 (`synchronize: false`).
 
+O acesso ao banco segue o princípio da inversão de dependência: os services dependem de `Repository<T>` (abstração do TypeORM) e a conexão é criada por um `DatabaseAdapter` (`src/config/database/`) com duas implementações — `SqliteDatabase` e `SupabaseDatabase` — selecionadas pela variável `DB_DRIVER`.
+
 ## Entidades (painel)
 
 ```text
@@ -96,9 +98,21 @@ cp .env.example .env   # preencher JWT_SECRET e a senha do delegado
 pnpm dev
 ```
 
-Abre `http://localhost:3000` (redirecciona para `/login`). No arranque o sistema corre migrations, activa WAL no SQLite e garante a conta padrão do delegado.
+Abre `http://localhost:3000` (redirecciona para `/login`). Na primeira inicialização o sistema corre as migrations automaticamente, activa WAL no SQLite (quando `DB_DRIVER=sqlite`) e garante a conta padrão do delegado — em qualquer driver.
 
-Na Vercel define `JWT_SECRET`, `DEFAULT_ADMIN_USER` e `DEFAULT_ADMIN_PASS`. O SQLite e os uploads ficam em `/tmp` (efémeros entre deploys).
+### Supabase (produção)
+
+Para usar o Supabase como banco (recomendado na Vercel, onde o SQLite em `/tmp` perde os dados a cada deploy):
+
+1. Crie um projeto no [Supabase](https://supabase.com) e copie a connection string (**Session mode**, porta `5432`) em *Project Settings → Database*.
+2. Defina no ambiente:
+
+```bash
+DB_DRIVER=supabase
+SUPABASE_DB_URL=postgresql://postgres.<ref>:<senha>@aws-0-<regiao>.pooler.supabase.com:5432/postgres
+```
+
+Na primeira inicialização as migrations correm automaticamente contra o Postgres, tal como no SQLite. Na Vercel define `JWT_SECRET`, `DEFAULT_ADMIN_USER`, `DEFAULT_ADMIN_PASS`, `DB_DRIVER=supabase` e `SUPABASE_DB_URL`. Os uploads continuam em `/tmp` (efémeros entre deploys).
 
 ```bash
 pnpm seed              # reexecuta o seed à mão
@@ -106,14 +120,16 @@ pnpm migration:run
 pnpm test
 ```
 
-As entidades TypeORM devem declarar `type` em cada coluna: o `tsx` não emite `design:type`.
+As entidades TypeORM devem declarar `type` em cada coluna regular (`varchar`, `integer`): o `tsx` não emite `design:type`. Exceção: `@CreateDateColumn`/`@UpdateDateColumn` **não** devem fixar `type: "datetime"` — omitir o tipo deixa o TypeORM escolher `datetime` no SQLite e `timestamp` no Postgres. Nas migrations, use o helper `timestampType(queryRunner)` para o mesmo efeito.
 
 ## Variáveis de ambiente
 
 ```bash
 PORT=3000
 NODE_ENV=development
-DB_PATH=./data/4tb.sqlite
+DB_DRIVER=sqlite          # sqlite | supabase
+DB_PATH=./data/4tb.sqlite # usada apenas com DB_DRIVER=sqlite
+SUPABASE_DB_URL=          # obrigatória com DB_DRIVER=supabase
 JWT_SECRET=
 JWT_EXPIRES_IN=8h
 COOKIE_NAME=4tb_token

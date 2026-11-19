@@ -17,9 +17,9 @@ export class User {
   @Column({ type: "varchar", name: "password_hash" })
   passwordHash!: string;
 
-  @CreateDateColumn({ type: "datetime", name: "created_at" })
+  @CreateDateColumn({ name: "created_at" })
   createdAt!: Date;
 
-  @UpdateDateColumn({ type: "datetime", name: "updated_at" })
+  @UpdateDateColumn({ name: "updated_at" })
   updatedAt!: Date;
 }

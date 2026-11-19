@@ -29,6 +29,6 @@ export class Announcement {
   @JoinColumn({ name: "semester_id" })
   semester!: Semester;
 
-  @CreateDateColumn({ type: "datetime", name: "created_at" })
+  @CreateDateColumn({ name: "created_at" })
   createdAt!: Date;
 }

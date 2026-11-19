@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { AppDataSource } from "../config/data-source";
+import { AppDataSource, databaseAdapter } from "../config/data-source";
 import { ensureDirectories } from "../config/paths";
 import { User } from "../models/User";
 import { SeedService } from "../services/SeedService";
@@ -11,8 +11,7 @@ async function seed(): Promise<void> {
     await AppDataSource.initialize();
   }
 
-  await AppDataSource.query("PRAGMA journal_mode = WAL;");
-  await AppDataSource.query("PRAGMA foreign_keys = ON;");
+  await databaseAdapter.afterInitialize(AppDataSource);
   await AppDataSource.runMigrations();
 
   const service = new SeedService(AppDataSource.getRepository(User));

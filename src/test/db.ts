@@ -1,9 +1,9 @@
-import { AppDataSource } from "../config/data-source";
+import { AppDataSource, databaseAdapter } from "../config/data-source";
 
 export async function setupTestDb(): Promise<void> {
   if (!AppDataSource.isInitialized) {
     await AppDataSource.initialize();
-    await AppDataSource.query("PRAGMA foreign_keys = ON;");
+    await databaseAdapter.afterInitialize(AppDataSource);
     await AppDataSource.runMigrations();
   }
 }

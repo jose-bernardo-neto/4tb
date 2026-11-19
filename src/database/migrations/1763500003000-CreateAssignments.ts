@@ -1,4 +1,5 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { timestampType } from "./columnTypes";
 
 export class CreateAssignments1763500003000 implements MigrationInterface {
   name = "CreateAssignments1763500003000";
@@ -20,7 +21,7 @@ export class CreateAssignments1763500003000 implements MigrationInterface {
           { name: "type", type: "varchar" },
           { name: "due_date", type: "varchar" },
           { name: "discipline_id", type: "integer" },
-          { name: "created_at", type: "datetime", default: "CURRENT_TIMESTAMP" },
+          { name: "created_at", type: timestampType(queryRunner), default: "CURRENT_TIMESTAMP" },
         ],
         foreignKeys: [
           {
