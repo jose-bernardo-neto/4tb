@@ -147,18 +147,18 @@ Painel, ainda sem bot:
 
 Não começar antes das fases 0–6.
 
-- [ ] Escolher e alinhar a lib (Baileys vs outra)
-- [ ] Cliente isolado em `src/bot/`
-- [ ] Command Pattern (`IBotCommand`)
-- [ ] Comandos só no semestre **activo**:
+- [x] Escolher e alinhar a lib (whatsapp-web.js, topologia unificada)
+- [x] Cliente isolado em `src/bot/`
+- [x] Command Pattern (`IBotCommand`)
+- [x] Comandos só no semestre **activo**:
   - `/professores`
   - `/cadeiras-sm1` `/cadeiras-sm2`
   - `/tarefas` `/tarefas-<sigla>`
   - `/horario` `/comunicados` `/emolumentos`
   - `/meu-np` (lookup pelo contacto WhatsApp já normalizado)
-- [ ] Gatilho: mensagem que **termina** em 😢 ou 😭 → reply PTT `faah.mp3`
-- [ ] Cooldown ~2s por utilizador
-- [ ] Testes de parser/comandos sem WhatsApp real
+- [x] Gatilho: mensagem que **termina** em 😢 ou 😭 → reply PTT `faah.mp3` (falta o ficheiro de áudio)
+- [x] Cooldown ~2s por utilizador
+- [x] Testes de parser/comandos sem WhatsApp real
 
 **Aceite:** grupo consulta o semestre activo; NP resolve pelo número; meme só no emoji final.
 

@@ -31,8 +31,7 @@ Documentação em [`docs/`](docs/README.md):
 | Auth | JWT em cookie `httpOnly` + `bcryptjs` |
 | Upload | Multer (horário e anexos permitidos) |
 | Testes | Vitest (unitário) + Supertest (E2E) |
-
-Biblioteca do WhatsApp fica para a fase do bot e será alinhada naquele momento.
+| WhatsApp | whatsapp-web.js (Puppeteer/Chromium, sessão LocalAuth) |
 
 ## Regras de domínio
 
@@ -63,7 +62,7 @@ src/
 ├── controllers/
 ├── models/
 ├── services/
-├── bot/                 # fase final
+├── bot/                 # parser, comandos, formatadores, cooldown + cliente whatsapp-web.js
 ├── middlewares/
 ├── views/
 ├── public/
@@ -122,6 +121,18 @@ pnpm test
 
 As entidades TypeORM devem declarar `type` em cada coluna regular (`varchar`, `integer`): o `tsx` não emite `design:type`. Exceção: `@CreateDateColumn`/`@UpdateDateColumn` **não** devem fixar `type: "datetime"` — omitir o tipo deixa o TypeORM escolher `datetime` no SQLite e `timestamp` no Postgres. Nas migrations, use o helper `timestampType(queryRunner)` para o mesmo efeito.
 
+### Bot WhatsApp
+
+O bot corre **no mesmo processo** do painel (`BOT_ENABLED=true`) e responde apenas em **grupos**, a qualquer participante. O núcleo (`src/bot/`) é offline e 100% testável sem WhatsApp: parser, Command Pattern (`IBotCommand`), formatadores, cooldown de ~2s por utilizador e gatilho de emoji. O cliente (`src/bot/client.ts`) é uma camada fina sobre o whatsapp-web.js.
+
+Comandos (semestre activo): `/professores`, `/cadeiras-sm1`, `/cadeiras-sm2`, `/tarefas`, `/tarefas-<sigla>`, `/horario`, `/comunicados`, `/emolumentos`, `/meu-np` (NP pelo número do remetente). Mensagem terminada em 😢 ou 😭 → resposta PTT com `src/public/assets/faah.mp3` (ficheiro a fornecer; sem ele o bot avisa no log e ignora).
+
+Requisitos: host always-on com Chromium (não corre em serverless/Vercel), número dedicado (lib não-oficial, risco de ban mitigado com cooldown) e scan do QR no primeiro arranque — a sessão fica em `data/wwebjs_auth/`.
+
+```bash
+BOT_ENABLED=true pnpm dev   # QR aparece no terminal; scan em Aparelhos ligados
+```
+
 ## Variáveis de ambiente
 
 ```bash
@@ -137,6 +148,7 @@ DEFAULT_ADMIN_USER=
 DEFAULT_ADMIN_PASS=
 UPLOAD_DIR=./uploads
 MAX_UPLOAD_BYTES=5242880
+BOT_ENABLED=false         # true liga o bot WhatsApp no mesmo processo
 ```
 
 ## Ordem de construção

@@ -59,4 +59,6 @@ export const env = {
   DEFAULT_ADMIN_PASS: required("DEFAULT_ADMIN_PASS"),
   UPLOAD_DIR: onVercel ? "/tmp/uploads" : resolveFromRoot(process.env.UPLOAD_DIR ?? "./uploads"),
   MAX_UPLOAD_BYTES: Number(process.env.MAX_UPLOAD_BYTES ?? 5 * 1024 * 1024),
+  BOT_ENABLED: process.env.BOT_ENABLED === "true",
+  BOT_NUMBER: process.env.BOT_NUMBER ?? undefined,
 };

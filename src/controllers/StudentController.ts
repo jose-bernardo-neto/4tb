@@ -5,12 +5,14 @@ import { env } from "../config/env";
 import { ASSIGNMENT_TYPE_LABELS, isImageMime } from "../domain/assignment";
 import { AppError } from "../errors/AppError";
 import { asyncHandler } from "../middlewares/asyncHandler";
+import { AcademicYear } from "../models/AcademicYear";
 import { Announcement } from "../models/Announcement";
 import { Assignment } from "../models/Assignment";
 import { AssignmentAttachment } from "../models/AssignmentAttachment";
 import { Discipline } from "../models/Discipline";
 import { Fee } from "../models/Fee";
 import { Semester } from "../models/Semester";
+import { Timetable } from "../models/Timetable";
 import { PublicCatalogService } from "../services/PublicCatalogService";
 
 export class StudentController {
@@ -22,6 +24,8 @@ export class StudentController {
       AppDataSource.getRepository(AssignmentAttachment),
       AppDataSource.getRepository(Announcement),
       AppDataSource.getRepository(Fee),
+      AppDataSource.getRepository(AcademicYear),
+      AppDataSource.getRepository(Timetable),
     );
   }
 
