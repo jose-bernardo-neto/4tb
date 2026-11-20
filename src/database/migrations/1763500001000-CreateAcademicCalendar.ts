@@ -1,4 +1,5 @@
 import { MigrationInterface, QueryRunner, Table, TableIndex } from "typeorm";
+import { timestampType } from "./columnTypes";
 
 export class CreateAcademicCalendar1763500001000 implements MigrationInterface {
   name = "CreateAcademicCalendar1763500001000";
@@ -16,7 +17,7 @@ export class CreateAcademicCalendar1763500001000 implements MigrationInterface {
             generationStrategy: "increment",
           },
           { name: "label", type: "varchar", isUnique: true },
-          { name: "created_at", type: "datetime", default: "CURRENT_TIMESTAMP" },
+          { name: "created_at", type: timestampType(queryRunner), default: "CURRENT_TIMESTAMP" },
         ],
       }),
       true,

@@ -1,6 +1,7 @@
 import { Repository } from "typeorm";
-import { SemesterStatus } from "../domain/academic";
+import { SemesterPeriod, SemesterStatus } from "../domain/academic";
 import { AppError } from "../errors/AppError";
+import { AcademicYear } from "../models/AcademicYear";
 import { Announcement } from "../models/Announcement";
 import { Assignment } from "../models/Assignment";
 import { AssignmentAttachment } from "../models/AssignmentAttachment";
@@ -8,6 +9,7 @@ import { Discipline } from "../models/Discipline";
 import { Fee } from "../models/Fee";
 import { Professor } from "../models/Professor";
 import { Semester } from "../models/Semester";
+import { Timetable } from "../models/Timetable";
 
 export class PublicCatalogService {
   constructor(
@@ -17,6 +19,8 @@ export class PublicCatalogService {
     private readonly attachments: Repository<AssignmentAttachment>,
     private readonly announcements: Repository<Announcement>,
     private readonly fees: Repository<Fee>,
+    private readonly years: Repository<AcademicYear>,
+    private readonly timetables: Repository<Timetable>,
   ) {}
 
   async getActiveSemester(): Promise<Semester | null> {
@@ -99,5 +103,36 @@ export class PublicCatalogService {
       where: { semesterId: semester.id },
       order: { prazo: "ASC", id: "ASC" },
     });
+  }
+
+  async getCurrentAcademicYear(): Promise<AcademicYear | null> {
+    const active = await this.getActiveSemester();
+    if (active?.academicYear) {
+      return active.academicYear;
+    }
+    return this.years.findOne({ order: { label: "DESC" } });
+  }
+
+  async listDisciplinesByPeriod(period: SemesterPeriod): Promise<Discipline[]> {
+    const year = await this.getCurrentAcademicYear();
+    if (!year) {
+      throw new AppError("Não há ano letivo.", 404);
+    }
+    const semester = await this.semesters.findOne({
+      where: { academicYearId: year.id, period },
+    });
+    if (!semester) {
+      throw new AppError("Semestre não encontrado para o período pedido.", 404);
+    }
+    return this.disciplines.find({
+      where: { semesterId: semester.id },
+      relations: { professor: true },
+      order: { acronym: "ASC" },
+    });
+  }
+
+  async getTimetable(): Promise<Timetable | null> {
+    const semester = await this.requireActiveSemester();
+    return this.timetables.findOne({ where: { semesterId: semester.id } });
   }
 }

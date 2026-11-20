@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find \"/home/neto/Documentos/Meus Projetos/4tb/src\" -type f | head -60 && echo --- && cat \"/home/neto/Documentos/Meus Projetos/4tb/src/config/data-source.ts\")",
+      "Bash(cat \"/home/neto/Documentos/Meus Projetos/4tb/src/config/bootstrap.ts\"; echo \"---\"; grep -n \"datetime\\\\|PRAGMA\\\\|boolean\\\\|blob\\\\|simple-json\\\\|text\" \"/home/neto/Documentos/Meus Projetos/4tb/src/database/migrations/\"*.ts | head -40)"
+    ]
+  }
+}

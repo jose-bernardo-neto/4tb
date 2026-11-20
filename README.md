@@ -27,12 +27,11 @@ Documentação em [`docs/`](docs/README.md):
 | Pacotes | pnpm |
 | Web | Express.js + EJS |
 | UI | HTML + CSS próprio (sem framework) |
-| Banco | SQLite3 + TypeORM, modo WAL |
+| Banco | TypeORM com driver intercambiável: SQLite3 (dev/testes, modo WAL) ou Supabase Postgres (produção) |
 | Auth | JWT em cookie `httpOnly` + `bcryptjs` |
 | Upload | Multer (horário e anexos permitidos) |
 | Testes | Vitest (unitário) + Supertest (E2E) |
-
-Biblioteca do WhatsApp fica para a fase do bot e será alinhada naquele momento.
+| WhatsApp | whatsapp-web.js (Puppeteer/Chromium, sessão LocalAuth) |
 
 ## Regras de domínio
 
@@ -63,7 +62,7 @@ src/
 ├── controllers/
 ├── models/
 ├── services/
-├── bot/                 # fase final
+├── bot/                 # parser, comandos, formatadores, cooldown + cliente whatsapp-web.js
 ├── middlewares/
 ├── views/
 ├── public/
@@ -73,6 +72,8 @@ src/
 ```
 
 Princípios: SOLID, DRY, OOP, erros via `AppError` + middleware global, migrations desde o dia 1 (`synchronize: false`).
+
+O acesso ao banco segue o princípio da inversão de dependência: os services dependem de `Repository<T>` (abstração do TypeORM) e a conexão é criada por um `DatabaseAdapter` (`src/config/database/`) com duas implementações — `SqliteDatabase` e `SupabaseDatabase` — selecionadas pela variável `DB_DRIVER`.
 
 ## Entidades (painel)
 
@@ -96,9 +97,21 @@ cp .env.example .env   # preencher JWT_SECRET e a senha do delegado
 pnpm dev
 ```
 
-Abre `http://localhost:3000` (redirecciona para `/login`). No arranque o sistema corre migrations, activa WAL no SQLite e garante a conta padrão do delegado.
+Abre `http://localhost:3000` (redirecciona para `/login`). Na primeira inicialização o sistema corre as migrations automaticamente, activa WAL no SQLite (quando `DB_DRIVER=sqlite`) e garante a conta padrão do delegado — em qualquer driver.
 
-Na Vercel define `JWT_SECRET`, `DEFAULT_ADMIN_USER` e `DEFAULT_ADMIN_PASS`. O SQLite e os uploads ficam em `/tmp` (efémeros entre deploys).
+### Supabase (produção)
+
+Para usar o Supabase como banco (recomendado na Vercel, onde o SQLite em `/tmp` perde os dados a cada deploy):
+
+1. Crie um projeto no [Supabase](https://supabase.com) e copie a connection string (**Session mode**, porta `5432`) em *Project Settings → Database*.
+2. Defina no ambiente:
+
+```bash
+DB_DRIVER=supabase
+SUPABASE_DB_URL=postgresql://postgres.<ref>:<senha>@aws-0-<regiao>.pooler.supabase.com:5432/postgres
+```
+
+Na primeira inicialização as migrations correm automaticamente contra o Postgres, tal como no SQLite. Na Vercel define `JWT_SECRET`, `DEFAULT_ADMIN_USER`, `DEFAULT_ADMIN_PASS`, `DB_DRIVER=supabase` e `SUPABASE_DB_URL`. Os uploads continuam em `/tmp` (efémeros entre deploys).
 
 ```bash
 pnpm seed              # reexecuta o seed à mão
@@ -106,14 +119,28 @@ pnpm migration:run
 pnpm test
 ```
 
-As entidades TypeORM devem declarar `type` em cada coluna: o `tsx` não emite `design:type`.
+As entidades TypeORM devem declarar `type` em cada coluna regular (`varchar`, `integer`): o `tsx` não emite `design:type`. Exceção: `@CreateDateColumn`/`@UpdateDateColumn` **não** devem fixar `type: "datetime"` — omitir o tipo deixa o TypeORM escolher `datetime` no SQLite e `timestamp` no Postgres. Nas migrations, use o helper `timestampType(queryRunner)` para o mesmo efeito.
+
+### Bot WhatsApp
+
+O bot corre **no mesmo processo** do painel (`BOT_ENABLED=true`) e responde apenas em **grupos**, a qualquer participante. O núcleo (`src/bot/`) é offline e 100% testável sem WhatsApp: parser, Command Pattern (`IBotCommand`), formatadores, cooldown de ~2s por utilizador e gatilho de emoji. O cliente (`src/bot/client.ts`) é uma camada fina sobre o whatsapp-web.js.
+
+Comandos (semestre activo): `/professores`, `/cadeiras-sm1`, `/cadeiras-sm2`, `/tarefas`, `/tarefas-<sigla>`, `/horario`, `/comunicados`, `/emolumentos`, `/meu-np` (NP pelo número do remetente). Mensagem terminada em 😢 ou 😭 → resposta PTT com `src/public/assets/faah.mp3` (ficheiro a fornecer; sem ele o bot avisa no log e ignora).
+
+Requisitos: host always-on com Chromium (não corre em serverless/Vercel), número dedicado (lib não-oficial, risco de ban mitigado com cooldown) e scan do QR no primeiro arranque — a sessão fica em `data/wwebjs_auth/`.
+
+```bash
+BOT_ENABLED=true pnpm dev   # QR aparece no terminal; scan em Aparelhos ligados
+```
 
 ## Variáveis de ambiente
 
 ```bash
 PORT=3000
 NODE_ENV=development
-DB_PATH=./data/4tb.sqlite
+DB_DRIVER=sqlite          # sqlite | supabase
+DB_PATH=./data/4tb.sqlite # usada apenas com DB_DRIVER=sqlite
+SUPABASE_DB_URL=          # obrigatória com DB_DRIVER=supabase
 JWT_SECRET=
 JWT_EXPIRES_IN=8h
 COOKIE_NAME=4tb_token
@@ -121,6 +148,7 @@ DEFAULT_ADMIN_USER=
 DEFAULT_ADMIN_PASS=
 UPLOAD_DIR=./uploads
 MAX_UPLOAD_BYTES=5242880
+BOT_ENABLED=false         # true liga o bot WhatsApp no mesmo processo
 ```
 
 ## Ordem de construção

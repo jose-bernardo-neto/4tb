@@ -3,6 +3,7 @@ dist/
 .env
 data/*.sqlite
 data/*.sqlite-*
+data/wwebjs_auth/
 uploads/*
 !uploads/.gitkeep
 coverage/

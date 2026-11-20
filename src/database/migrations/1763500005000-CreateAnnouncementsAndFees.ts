@@ -1,4 +1,5 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { timestampType } from "./columnTypes";
 
 export class CreateAnnouncementsAndFees1763500005000 implements MigrationInterface {
   name = "CreateAnnouncementsAndFees1763500005000";
@@ -19,7 +20,7 @@ export class CreateAnnouncementsAndFees1763500005000 implements MigrationInterfa
           { name: "body", type: "varchar" },
           { name: "date", type: "varchar" },
           { name: "semester_id", type: "integer" },
-          { name: "created_at", type: "datetime", default: "CURRENT_TIMESTAMP" },
+          { name: "created_at", type: timestampType(queryRunner), default: "CURRENT_TIMESTAMP" },
         ],
         foreignKeys: [
           {

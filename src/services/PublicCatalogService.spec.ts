@@ -9,6 +9,7 @@ import { Discipline } from "../models/Discipline";
 import { Fee } from "../models/Fee";
 import { Professor } from "../models/Professor";
 import { Semester } from "../models/Semester";
+import { Timetable } from "../models/Timetable";
 import { clearAcademicData, setupTestDb, teardownTestDb } from "../test/db";
 import { AcademicYearService } from "./AcademicYearService";
 import { AssignmentService } from "./AssignmentService";
@@ -56,6 +57,8 @@ describe("PublicCatalogService", () => {
       AppDataSource.getRepository(AssignmentAttachment),
       AppDataSource.getRepository(Announcement),
       AppDataSource.getRepository(Fee),
+      AppDataSource.getRepository(AcademicYear),
+      AppDataSource.getRepository(Timetable),
     );
   });
 

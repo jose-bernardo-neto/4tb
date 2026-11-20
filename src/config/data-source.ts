@@ -19,32 +19,35 @@ import { Fee } from "../models/Fee";
 import { Timetable } from "../models/Timetable";
 import { User } from "../models/User";
 import { env } from "./env";
+import { createDatabaseAdapter } from "./database";
 
-export const AppDataSource = new DataSource({
-  type: "sqlite",
-  database: env.DB_PATH,
-  entities: [
-    User,
-    AcademicYear,
-    Semester,
-    Discipline,
-    Professor,
-    Assignment,
-    AssignmentAttachment,
-    Timetable,
-    Announcement,
-    Fee,
-    Student,
-  ],
-  migrations: [
-    CreateUsers1763500000000,
-    CreateAcademicCalendar1763500001000,
-    CreateProfessors1763500002000,
-    CreateAssignments1763500003000,
-    CreateTimetables1763500004000,
-    CreateAnnouncementsAndFees1763500005000,
-    CreateStudents1763500006000,
-  ],
-  synchronize: false,
-  logging: env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
-});
+export const databaseAdapter = createDatabaseAdapter(env);
+
+export const AppDataSource = new DataSource(
+  databaseAdapter.buildOptions({
+    entities: [
+      User,
+      AcademicYear,
+      Semester,
+      Discipline,
+      Professor,
+      Assignment,
+      AssignmentAttachment,
+      Timetable,
+      Announcement,
+      Fee,
+      Student,
+    ],
+    migrations: [
+      CreateUsers1763500000000,
+      CreateAcademicCalendar1763500001000,
+      CreateProfessors1763500002000,
+      CreateAssignments1763500003000,
+      CreateTimetables1763500004000,
+      CreateAnnouncementsAndFees1763500005000,
+      CreateStudents1763500006000,
+    ],
+    synchronize: false,
+    logging: env.NODE_ENV === "development" ? ["error", "warn"] : ["error"],
+  }),
+);

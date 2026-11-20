@@ -28,11 +28,30 @@ function resolveDbPath(): string {
   return resolveFromRoot("./data/4tb.sqlite");
 }
 
+export type DbDriver = "sqlite" | "supabase";
+
+function resolveDbDriver(): DbDriver {
+  const driver = process.env.DB_DRIVER ?? "sqlite";
+  if (driver !== "sqlite" && driver !== "supabase") {
+    throw new Error(`DB_DRIVER inválida: "${driver}" (use "sqlite" ou "supabase")`);
+  }
+  return driver;
+}
+
+const dbDriver = resolveDbDriver();
+const supabaseDbUrl = process.env.SUPABASE_DB_URL;
+
+if (dbDriver === "supabase" && !supabaseDbUrl) {
+  throw new Error("Variável de ambiente obrigatória em falta: SUPABASE_DB_URL (DB_DRIVER=supabase)");
+}
+
 export const env = {
   PORT: Number(process.env.PORT ?? 3000),
   NODE_ENV: nodeEnv,
   isProd: nodeEnv === "production",
+  DB_DRIVER: dbDriver,
   DB_PATH: resolveDbPath(),
+  SUPABASE_DB_URL: supabaseDbUrl,
   JWT_SECRET: required("JWT_SECRET"),
   JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ?? "8h",
   COOKIE_NAME: process.env.COOKIE_NAME ?? "4tb_token",
@@ -40,4 +59,6 @@ export const env = {
   DEFAULT_ADMIN_PASS: required("DEFAULT_ADMIN_PASS"),
   UPLOAD_DIR: onVercel ? "/tmp/uploads" : resolveFromRoot(process.env.UPLOAD_DIR ?? "./uploads"),
   MAX_UPLOAD_BYTES: Number(process.env.MAX_UPLOAD_BYTES ?? 5 * 1024 * 1024),
+  BOT_ENABLED: process.env.BOT_ENABLED === "true",
+  BOT_NUMBER: process.env.BOT_NUMBER ?? undefined,
 };

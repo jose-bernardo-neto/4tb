@@ -12,6 +12,6 @@ export class AcademicYear {
   @OneToMany(() => Semester, (semester) => semester.academicYear)
   semesters!: Semester[];
 
-  @CreateDateColumn({ type: "datetime", name: "created_at" })
+  @CreateDateColumn({ name: "created_at" })
   createdAt!: Date;
 }

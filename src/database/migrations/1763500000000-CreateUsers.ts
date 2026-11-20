@@ -1,4 +1,5 @@
 import { MigrationInterface, QueryRunner, Table } from "typeorm";
+import { timestampType } from "./columnTypes";
 
 export class CreateUsers1763500000000 implements MigrationInterface {
   name = "CreateUsers1763500000000";
@@ -26,12 +27,12 @@ export class CreateUsers1763500000000 implements MigrationInterface {
           },
           {
             name: "created_at",
-            type: "datetime",
+            type: timestampType(queryRunner),
             default: "CURRENT_TIMESTAMP",
           },
           {
             name: "updated_at",
-            type: "datetime",
+            type: timestampType(queryRunner),
             default: "CURRENT_TIMESTAMP",
           },
         ],

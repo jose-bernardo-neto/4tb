@@ -38,6 +38,6 @@ export class Assignment {
   @OneToMany(() => AssignmentAttachment, (attachment) => attachment.assignment)
   attachments!: AssignmentAttachment[];
 
-  @CreateDateColumn({ type: "datetime", name: "created_at" })
+  @CreateDateColumn({ name: "created_at" })
   createdAt!: Date;
 }
