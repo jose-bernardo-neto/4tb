@@ -8,6 +8,7 @@ ENV NODE_ENV=production \
     PNPM_HOME=/root/.local/share/pnpm \
     PATH=/root/.local/share/pnpm:$PATH \
     PUPPETEER_SKIP_DOWNLOAD=true
+# build-cache-bust: 20261120-forca-rebuild-com-libcups2
 RUN apt-get update && apt-get install -y --no-install-recommends \
     ca-certificates \
     libnss3 \
