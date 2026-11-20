@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libnss3 \
     libatk1.0-0 \
     libatk-bridge2.0-0 \
-    libcups2-2 \
+    # libcups2-2 não existe no Debian/Ubuntu (base do node:slim); o pacote correto é libcups2
+    libcups2 \
     libdrm2 \
     libdbus-1-3 \
     libxcomposite1 \
